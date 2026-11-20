@@ -277,6 +277,8 @@ module mphys_switches
   logical :: l_idep           = .true.  ! deposition of ice/snow/graupel
   logical :: l_isub           = .true.  ! sublimation of ice/snow/graupel
 
+  logical :: l_turb_enhance   = .false.
+
   logical :: l_pos1           = .true.   ! switch on positivity check
   logical :: l_pos2           = .true.   ! switch on positivity check
   logical :: l_pos3           = .true.   ! switch on positivity check

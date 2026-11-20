@@ -1,10 +1,10 @@
 module accretion
   use variable_precision, only: wp
-  use passive_fields, only: rho
+  use passive_fields, only: rho, turb_edr
 ! use mphys_switches, only: i_m3r, l_3mr
   use mphys_switches, only: i_ql, i_qr, i_nl, l_2mc, &
        l_aacc, i_am4, i_am5, l_process, active_rain, isol, l_preventsmall, &
-       l_prf_cfrac, i_cfl, i_cfr, l_kk00
+       l_prf_cfrac, i_cfl, i_cfr, l_kk00, l_turb_enhance
   use mphys_constants, only: fixed_cloud_number
   use mphys_parameters, only: hydro_params
 ! use mphys_parameters, only: p1, p2, p3, rain_params
@@ -12,6 +12,7 @@ module accretion
   use thresholds, only: ql_small, qr_small, cfliq_small
   use sweepout_rate, only: sweepout
   use distributions, only: dist_lambda, dist_mu, dist_n0
+  use turb_enhance, only: accretion_enhance
 ! use m3_incs, only: m3_inc_type2
 
   implicit none
@@ -59,6 +60,7 @@ contains
 !   real(wp) :: rain_number
 !   real(wp) :: rain_m3
     real(wp) :: cf_liquid, cf_rain
+    real(wp) :: turb_enhance_factor
 
 
     real(wp) :: mu, n0, lam
@@ -107,17 +109,29 @@ contains
        
     
        ! if (l_3mr) rain_m3 = qfields(k, i_m3r)
+
+       turb_enhance_factor = 1.0_wp
        
        if (cloud_mass*cf_liquid > ql_small .and. rain_mass*cf_rain > qr_small) then
+           if (l_turb_enhance) then
+               if (allocated(dist_mu) .and. allocated(dist_lambda)) then
+                   if (dist_lambda(k, params%id) > 0.0_wp) then
+                       call accretion_enhance(turb_enhance_factor, turb_edr(k),        &
+                               dist_mu(k, params%id),                             &
+                               dist_lambda(k, params%id))
+                   end if
+               end if
+          end if
+
           if (l_kk_acw) then
              !        dmass=min(0.9*cloud_mass, 67.0*(cloud_mass*rain_mass)**1.15)
              if (l_kk00) then
                 ! Use KK accretion parametrisation but limit to 90% of cloud mass removal
-                dmass = MIN(0.9*cloud_mass, 67.0*(cloud_mass*rain_mass)**1.15)
+                dmass = MIN(0.9*cloud_mass, 67.0*(cloud_mass*rain_mass)**1.15 * turb_enhance_factor)
              else
                 ! Use Kogan(2013) accretion parametrisation but limit to 90% 
                 ! of cloud mass removal
-                dmass = min(0.9*cloud_mass, 8.53*(cloud_mass**1.05)*(rain_mass)**0.98)
+                dmass = min(0.9*cloud_mass, 8.53*(cloud_mass**1.05)*(rain_mass)**0.98 * turb_enhance_factor)
              endif
              
           else

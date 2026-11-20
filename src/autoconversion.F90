@@ -1,9 +1,9 @@
 module autoconversion
   use variable_precision, only: wp
-  use passive_fields, only: rho
+  use passive_fields, only: rho, turb_edr
   use mphys_switches, only: i_ql, i_qr, i_nl, i_nr, l_2mc, &
        l_2mr, l_aaut, i_am4, i_am5, cloud_params, rain_params, l_process, &
-       l_separate_rain, l_preventsmall, l_prf_cfrac, i_cfl, l_kk00
+       l_separate_rain, l_preventsmall, l_prf_cfrac, i_cfl, l_kk00, l_turb_enhance
 ! use mphys_switches, only: m3r, l_3mr
   use mphys_constants, only: fixed_cloud_number
   use mphys_parameters, only: rain_params
@@ -11,6 +11,8 @@ module autoconversion
   use process_routines, only: process_rate, i_praut, i_aaut
   use thresholds, only: ql_small, nl_small, qr_small, cfliq_small
 ! use m3_incs, only: m3_inc_type3
+  use turb_enhance, only: autoconversion_enhance
+  use distributions, only: dist_mu, dist_lambda
 
   implicit none
 
@@ -39,6 +41,7 @@ contains
 !   real(wp) :: dm1,dm2,dm3
     real(wp) :: cloud_mass
     real(wp) :: cloud_number
+    real(wp) :: turb_enhance_factor
 !   real(wp) :: p1, p2, p3
 !   real(wp) :: k1, k2, k3
     real(wp) :: mu_qc ! < cloud shape parameter (currently only used diagnostically here)
@@ -79,15 +82,26 @@ contains
       cloud_number=fixed_cloud_number
     end if
 
+   turb_enhance_factor = 1.0_wp
+
     if (cloud_mass *cf_liquid> ql_small .and. &
          cloud_number * cf_liquid > nl_small) then
+      if (l_turb_enhance) then
+        if (allocated(dist_mu) .and. allocated(dist_lambda)) then
+          if (dist_lambda(k, cloud_params%id) > 0.0_wp) then
+            call autoconversion_enhance(turb_enhance_factor, turb_edr(k),        &
+                        dist_mu(k, cloud_params%id),                        &
+                        dist_lambda(k, cloud_params%id))
+          end if
+        end if
+      end if
       if (l_kk00) then
          dmass = 1350.*cloud_mass**2.47*  &
-              (cloud_number/1.e6*rho(k))**(-1.79)
+              (cloud_number/1.e6*rho(k))**(-1.79)*turb_enhance_factor
       else
          ! new method, k13 scheme
          dmass = 7.98e10*cloud_mass**4.22*  &
-              (cloud_number/1.e6*rho(k))**(-3.01)
+              (cloud_number/1.e6*rho(k))**(-3.01)*turb_enhance_factor
       endif
 
       dmass=min(.25*cloud_mass/dt, dmass)
