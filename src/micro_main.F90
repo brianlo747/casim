@@ -69,7 +69,7 @@ module micro_main
 !   Use namelists, only : no_precip_time, l_sediment
 ! #endif
 
-
+  USE umPrintMgr, ONLY: umPrint, PrStatus_Normal
   implicit none
 
   private
@@ -623,7 +623,7 @@ contains
         !--------------------------------------------------
         ! set fields which will not be modified
         !--------------------------------------------------
-
+        CALL umPrint('brian1234_casim1', src='micro_main', level=PrStatus_Normal)
         call set_passive_fields(dt, rho(ks:ke,i,j),    &
              pressure(ks:ke,i,j), exner(ks:ke,i,j),    &
              dz(ks:ke,i,j),                            &
