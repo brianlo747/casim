@@ -1085,14 +1085,14 @@ contains
        ! Do the autoconversion to rain
        !-------------------------------
        if (pswitch%l_praut) then
-          call raut(step_length, qfields, cffields, aerofields, procs, aerosol_procs, turb_edr)
+          call raut(step_length, qfields, cffields, aerofields, procs, aerosol_procs)
        end if
 
        !-------------------------------
        ! Do the rain accreting cloud
        !-------------------------------
        if (pswitch%l_pracw) then
-          call racw(step_length, qfields, cffields, aerofields, procs, rain_params, aerosol_procs, turb_edr)
+          call racw(step_length, qfields, cffields, aerofields, procs, rain_params, aerosol_procs)
        end if
 
        !-------------------------------
