@@ -628,10 +628,12 @@ contains
              pressure(ks:ke,i,j), exner(ks:ke,i,j),    &
              dz(ks:ke,i,j),                            &
              w(ks:ke,i,j), tke(ks:ke,i,j), turb_edr(ks:ke,i,j), qfields )
+        CALL umPrint('brian1234_casim1_end', src='micro_main', level=PrStatus_Normal)
         
         !--------------------------------------------------
         ! Do the business...
         !--------------------------------------------------
+        CALL umPrint('brian1234_casim2', src='micro_main', level=PrStatus_Normal)
         call microphysics_common(dt, i , j, qfields, cffields, dqfields, tend, procs &
              , precip(i,j), precip_l, precip_r, precip_i, precip_s, precip_g       &
              , precip_r1d, precip_s1d, precip_so1d, precip_g1d                     &
@@ -640,6 +642,7 @@ contains
              , aeroice, dustliq                                                    &
              , aerofields, daerofields, aerosol_tend, aerosol_procs                &
              , rhcrit_1d, turb_edr(ks:ke,i,j))
+        CALL umPrint('brian1234_casim2_end', src='micro_main', level=PrStatus_Normal)
 
         !--------------------------------------------------
         ! Relate back tendencies
@@ -810,6 +813,7 @@ contains
 !     call save_dg(sum(casdiags % SurfaceRainR(:, :))/nxny*3600.0, 'surface_precip_mmhr', i_dgtime)
 ! #endif
 
+    CALL umPrint('brian1234_casim3', src='micro_main', level=PrStatus_Normal)
     IF (lhook) CALL dr_hook(ModuleName//':'//RoutineName,zhook_out,zhook_handle)
 
   end subroutine shipway_microphysics
