@@ -641,7 +641,7 @@ contains
              , dustphys, dustchem, dustact                                         &
              , aeroice, dustliq                                                    &
              , aerofields, daerofields, aerosol_tend, aerosol_procs                &
-             , rhcrit_1d, turb_edr(ks:ke,i,j))
+             , rhcrit_1d)
         CALL umPrint('brian1234_casim2_end', src='micro_main', level=PrStatus_Normal)
 
         !--------------------------------------------------
