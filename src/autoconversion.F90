@@ -1,6 +1,6 @@
 module autoconversion
   use variable_precision, only: wp
-  use passive_fields, only: rho, turb_edr
+  use passive_fields, only: rho
   use mphys_switches, only: i_ql, i_qr, i_nl, i_nr, l_2mc, &
        l_2mr, l_aaut, i_am4, i_am5, cloud_params, rain_params, l_process, &
        l_separate_rain, l_preventsmall, l_prf_cfrac, i_cfl, l_kk00, l_turb_enhance
@@ -86,15 +86,15 @@ contains
    turb_enhance_factor = 1.0_wp
     if (cloud_mass *cf_liquid> ql_small .and. &
          cloud_number * cf_liquid > nl_small) then
-      if (l_turb_enhance) then
-        if (allocated(dist_mu) .and. allocated(dist_lambda)) then
-          if (dist_lambda(k, cloud_params%id) > 0.0_wp) then
-            call autoconversion_enhance(turb_enhance_factor, turb_edr(k),        &
-                        dist_mu(k, cloud_params%id),                        &
-                        dist_lambda(k, cloud_params%id))
-          end if
-        end if
-      end if
+!      if (l_turb_enhance) then
+!        if (allocated(dist_mu) .and. allocated(dist_lambda)) then
+!          if (dist_lambda(k, cloud_params%id) > 0.0_wp) then
+!            call autoconversion_enhance(turb_enhance_factor, turb_edr(k),        &
+!                        dist_mu(k, cloud_params%id),                        &
+!                        dist_lambda(k, cloud_params%id))
+!          end if
+!        end if
+!      end if
       if (l_kk00) then
          dmass = 1350.*cloud_mass**2.47*  &
               (cloud_number/1.e6*rho(k))**(-1.79)*turb_enhance_factor
