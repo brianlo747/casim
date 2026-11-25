@@ -44,11 +44,19 @@ contains
         kc_bet = kc1_bet
         prey   = -0.125_wp
 
-        D_mean = (1+mu)/lam
-        diss = turb_edr * 1.0E4_wp
-        Re = MAX(10000.0_wp * EXP ( 1.0_wp/6.0_wp*LOG(diss/100.0_wp) ), 2000.0_wp)
-        k_turb = 1.0_wp + diss* EXP(prey*LOG(Re)) * (kc_bet + kc_alf * &
-                EXP( -1.0_wp* ((((D_mean/2.0_wp)*1.e6_wp-kc_rad)/kc_sig)**2) ))
+        if (turb_edr <= 0.0_wp .or. lam <= 0.0_wp) then
+            k_turb = 1.0_wp
+        else
+            D_mean = (1.0_wp+mu)/lam
+            if (D_mean <= 0.0_wp) then
+                k_turb = 1.0_wp
+            else
+                diss = turb_edr * 1.0E4_wp
+                Re = MAX(10000.0_wp * EXP ( 1.0_wp/6.0_wp*LOG(diss/100.0_wp) ), 2000.0_wp)
+                k_turb = 1.0_wp + diss* EXP(prey*LOG(Re)) * (kc_bet + kc_alf * &
+                        EXP( -1.0_wp* ((((D_mean/2.0_wp)*1.e6_wp-kc_rad)/kc_sig)**2) ))
+            end if
+        end if
 
     end subroutine autoconversion_enhance
 
@@ -67,9 +75,17 @@ contains
         real(wp), intent(inout) :: k_turb
         real(wp) :: diss,D_mean
 
-        D_mean = (1+mu)/lam
-        diss = turb_edr * 1.0E4_wp
-        k_turb = 1.0_wp + 0.8e-3_wp * diss * (D_min/D_mean)**(2.0_wp)
+        if (turb_edr <= 0.0_wp .or. lam <= 0.0_wp) then
+            k_turb = 1.0_wp
+        else
+            D_mean = (1.0_wp+mu)/lam
+            if (D_mean <= 0.0_wp) then
+                k_turb = 1.0_wp
+            else
+                diss = turb_edr * 1.0E4_wp
+                k_turb = 1.0_wp + 0.8e-3_wp * diss * (D_min/D_mean)**(2.0_wp)
+            end if
+        end if
 
     end subroutine accretion_enhance
 
@@ -88,9 +104,18 @@ contains
         real(wp), intent(inout) :: k_turb
         real(wp) :: diss,D_mean
 
-        D_mean = (1+mu)/lam
-        diss = turb_edr * 1.0E4_wp
-        k_turb = 1.0_wp + 0.8e-3_wp * diss * (D_min/D_mean)**(2.0_wp)
+        if (turb_edr <= 0.0_wp .or. lam <= 0.0_wp) then
+            k_turb = 1.0_wp
+        else
+            D_mean = (1.0_wp+mu)/lam
+            if (D_mean <= 0.0_wp) then
+                k_turb = 1.0_wp
+            else
+                diss = turb_edr * 1.0E4_wp
+                k_turb = 1.0_wp + 0.8e-3_wp * diss * (D_min/D_mean)**(2.0_wp)
+            end if
+        end if
+
 
     end subroutine selfcollection_enhance
 
