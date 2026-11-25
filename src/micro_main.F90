@@ -825,7 +825,7 @@ contains
        , dustphys, dustchem, dustact                                          &
        , aeroice, dustliq                                                     &
        , aerofields, daerofields, aerosol_tend, aerosol_procs                 &
-       , rhcrit_1d, turb_edr)
+       , rhcrit_1d)
 
 
     USE yomhook, ONLY: lhook, dr_hook
@@ -837,7 +837,6 @@ contains
     real(wp), intent(in) :: dt  ! timestep from parent model
     integer, intent(in) :: ix, jy
     real(wp), intent(in) :: rhcrit_1d(:)
-    real(wp), intent(in) :: turb_edr(:)
     real(wp), intent(inout) :: qfields(:,:), dqfields(:,:), tend(:,:)
     real(wp), intent(in) :: cffields(:,:)
     
