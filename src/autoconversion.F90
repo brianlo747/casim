@@ -13,7 +13,7 @@ module autoconversion
 ! use m3_incs, only: m3_inc_type3
   use turb_enhance, only: autoconversion_enhance
   use distributions, only: dist_mu, dist_lambda
-
+  USE umPrintMgr, ONLY: umPrint, PrStatus_Normal
   implicit none
 
   character(len=*), parameter, private :: ModuleName='AUTOCONVERSION'
@@ -59,6 +59,7 @@ contains
     !--------------------------------------------------------------------------
     IF (lhook) CALL dr_hook(ModuleName//':'//RoutineName,zhook_in,zhook_handle)
 
+   CALL umPrint('brian1234_autoconv1', src='autoconversion', level=PrStatus_Normal)
    do k = 1, ubound(qfields,1)
    if (l_prf_cfrac) then
 
@@ -83,7 +84,6 @@ contains
     end if
 
    turb_enhance_factor = 1.0_wp
-
     if (cloud_mass *cf_liquid> ql_small .and. &
          cloud_number * cf_liquid > nl_small) then
       if (l_turb_enhance) then
@@ -163,7 +163,7 @@ contains
           end if
        end if
     enddo
-
+    CALL umPrint('brian1234_autoconv1_end', src='autoconversion', level=PrStatus_Normal)
     IF (lhook) CALL dr_hook(ModuleName//':'//RoutineName,zhook_out,zhook_handle)
 
   end subroutine raut
