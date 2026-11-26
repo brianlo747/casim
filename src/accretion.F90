@@ -1,6 +1,6 @@
 module accretion
   use variable_precision, only: wp
-  use passive_fields, only: rho
+  use passive_fields, only: rho, turb_edr
 ! use mphys_switches, only: i_m3r, l_3mr
   use mphys_switches, only: i_ql, i_qr, i_nl, l_2mc, &
        l_aacc, i_am4, i_am5, l_process, active_rain, isol, l_preventsmall, &
@@ -113,15 +113,15 @@ contains
        turb_enhance_factor = 1.0_wp
        
        if (cloud_mass*cf_liquid > ql_small .and. rain_mass*cf_rain > qr_small) then
-!           if (l_turb_enhance) then
-!               if (allocated(dist_mu) .and. allocated(dist_lambda)) then
-!                   if (dist_lambda(k, params%id) > 0.0_wp) then
-!                       call accretion_enhance(turb_enhance_factor, turb_edr(k),        &
-!                               dist_mu(k, params%id),                             &
-!                               dist_lambda(k, params%id))
-!                   end if
-!               end if
-!          end if
+           if (l_turb_enhance) then
+               if (allocated(dist_mu) .and. allocated(dist_lambda)) then
+                   if (dist_lambda(k, params%id) > 0.0_wp) then
+                       call accretion_enhance(turb_enhance_factor, turb_edr(k),        &
+                               dist_mu(k, params%id),                             &
+                               dist_lambda(k, params%id))
+                   end if
+               end if
+          end if
 
           if (l_kk_acw) then
              !        dmass=min(0.9*cloud_mass, 67.0*(cloud_mass*rain_mass)**1.15)

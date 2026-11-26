@@ -10,10 +10,10 @@ module passive_fields
 
   real(wp), allocatable :: rho(:), pressure(:), z(:), exner(:), rexner(:)
   real(wp), allocatable :: dz(:)
-  real(wp), allocatable :: qws(:), qws0(:), TdegC(:), TdegK(:), w(:), tke(:)!, turb_edr(:)
+  real(wp), allocatable :: qws(:), qws0(:), TdegC(:), TdegK(:), w(:), tke(:), turb_edr(:)
 
 !$OMP THREADPRIVATE(rho, pressure, z, exner, rexner, dz, &
-!$OMP               qws, qws0, TdegC, TdegK, w, tke)
+!$OMP               qws, qws0, TdegC, TdegK, w, tke, turb_edr)
 
   real(wp), allocatable :: rhcrit_1d(:)
 !$OMP THREADPRIVATE(rhcrit_1d)
@@ -31,7 +31,7 @@ module passive_fields
 
   public set_passive_fields, rho, pressure, initialise_passive_fields, z, qws, &
        exner, rexner, dz, qws0, &
-       TdegC, TdegK, w, tke, rhcrit_1d, rdz_on_rho, min_dz
+       TdegC, TdegK, w, tke, turb_edr, rhcrit_1d, rdz_on_rho, min_dz
 contains
 
   subroutine initialise_passive_fields(kl_arg, ku_arg)
@@ -64,7 +64,7 @@ contains
     allocate(dz(nz))
     allocate(w(nz))
     allocate(tke(nz))
-!    allocate(turb_edr(nz))
+    allocate(turb_edr(nz))
     allocate(rdz_on_rho(nz))
     allocate(qws(nz))
     allocate(qws0(nz))
@@ -76,7 +76,7 @@ contains
   end subroutine initialise_passive_fields
 
   subroutine set_passive_fields(dt_in, rho_in, p_in, exner_in,   &
-                                dz_in, w_in, tke_in, qfields)
+                                dz_in, w_in, tke_in, turb_edr_in, qfields)
 
     USE yomhook, ONLY: lhook, dr_hook
     USE parkind1, ONLY: jprb, jpim
@@ -88,7 +88,7 @@ contains
     real(wp), intent(in) :: dt_in
     real(wp), intent(in) :: rho_in(kl:ku), p_in(kl:ku), exner_in(kl:ku)
     real(wp), intent(in) :: dz_in(kl:ku)
-    real(wp), intent(in) :: w_in(kl:ku), tke_in(kl:ku)!, turb_edr_in(kl:ku)
+    real(wp), intent(in) :: w_in(kl:ku), tke_in(kl:ku), turb_edr_in(kl:ku)
     real(wp), intent(in), target :: qfields(:,:)
     integer :: k
 
@@ -113,7 +113,7 @@ contains
     rexner(:)=1.0/exner(:)
     w(:)=w_in(kl:ku)
     tke(:)=tke_in(kl:ku)
-!    turb_edr(:)=turb_edr_in(kl:ku)
+    turb_edr(:)=turb_edr_in(kl:ku)
     dz(:)=dz_in(kl:ku)
     rdz_on_rho(:)=1.0/(dz_in(kl:ku)*rho_in(kl:ku))
     do k=1,nz
