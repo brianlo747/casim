@@ -92,6 +92,7 @@ contains
             call autoconversion_enhance(turb_enhance_factor, turb_edr(k),        &
                         dist_mu(k, cloud_params%id),                        &
                         dist_lambda(k, cloud_params%id))
+            CALL umPrint('brian9999_turb_enhanced', src='autoconversion', level=PrStatus_Normal)
           end if
         end if
       end if
