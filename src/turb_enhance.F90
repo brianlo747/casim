@@ -78,7 +78,7 @@ contains
         if (turb_edr <= 0.0_wp .or. lam <= 0.0_wp) then
             k_turb = 1.0_wp
         else
-            D_mean = (1.0_wp+mu)/lam
+            D_mean = ((3.0_wp + mu) * (2.0_wp + mu) * (1.0_wp + mu))**(1.0_wp/3.0_wp) / lam
             if (D_mean <= 0.0_wp) then
                 k_turb = 1.0_wp
             else
