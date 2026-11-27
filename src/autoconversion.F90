@@ -59,7 +59,6 @@ contains
     !--------------------------------------------------------------------------
     IF (lhook) CALL dr_hook(ModuleName//':'//RoutineName,zhook_in,zhook_handle)
 
-   CALL umPrint('brian1234_autoconv1', src='autoconversion', level=PrStatus_Normal)
    do k = 1, ubound(qfields,1)
    if (l_prf_cfrac) then
 
@@ -166,7 +165,7 @@ contains
           end if
        end if
     enddo
-    CALL umPrint('brian1234_autoconv1_end', src='autoconversion', level=PrStatus_Normal)
+
     IF (lhook) CALL dr_hook(ModuleName//':'//RoutineName,zhook_out,zhook_handle)
 
   end subroutine raut
