@@ -51,7 +51,7 @@ contains
             if (D_mean <= 0.0_wp) then
                 k_turb = 1.0_wp
             else
-                diss = turb_edr * 1.0E4_wp
+                diss = MIN(3000.0_wp, turb_edr * 1.0E4_wp)
                 Re = MAX(10000.0_wp * EXP ( 1.0_wp/6.0_wp*LOG(diss/100.0_wp) ), 2000.0_wp)
                 k_turb = 1.0_wp + diss* EXP(prey*LOG(Re)) * (kc_bet + kc_alf * &
                         EXP( -1.0_wp* ((((D_mean/2.0_wp)*1.e6_wp-kc_rad)/kc_sig)**2) ))
@@ -82,7 +82,7 @@ contains
             if (D_mean <= 0.0_wp) then
                 k_turb = 1.0_wp
             else
-                diss = turb_edr * 1.0E4_wp
+                diss = MIN(3000.0_wp, turb_edr * 1.0E4_wp)
                 k_turb = 1.0_wp + 0.8e-3_wp * diss * (D_min/D_mean)**(2.0_wp)
             end if
         end if
