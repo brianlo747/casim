@@ -13,7 +13,7 @@ module autoconversion
 ! use m3_incs, only: m3_inc_type3
   use turb_enhance, only: autoconversion_enhance
   use distributions, only: dist_mu, dist_lambda
-  USE umPrintMgr, ONLY: umPrint, PrStatus_Normal
+  USE umPrintMgr, ONLY: umPrint, umMessage, PrStatus_Normal
   implicit none
 
   character(len=*), parameter, private :: ModuleName='AUTOCONVERSION'
@@ -92,7 +92,9 @@ contains
             call autoconversion_enhance(turb_enhance_factor, turb_edr(k),        &
                         dist_mu(k, cloud_params%id),                        &
                         dist_lambda(k, cloud_params%id))
-            CALL umPrint('brian9999_turb_enhanced', src='autoconversion', level=PrStatus_Normal)
+            write(umMessage, '(A, ES14.6)')                                       &
+                    'brian9999_turb_enhanced_autoconv_factor = ', turb_enhance_factor
+            call umPrint(umMessage, src='autoconversion', level=PrStatus_Normal)
           end if
         end if
       end if

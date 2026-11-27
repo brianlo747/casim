@@ -14,7 +14,7 @@ module accretion
   use distributions, only: dist_lambda, dist_mu, dist_n0
   use turb_enhance, only: accretion_enhance
 ! use m3_incs, only: m3_inc_type2
-
+  USE umPrintMgr, ONLY: umPrint, umMessage, PrStatus_Normal
   implicit none
 
   character(len=*), parameter, private :: ModuleName='ACCRETION'
@@ -119,6 +119,9 @@ contains
                        call accretion_enhance(turb_enhance_factor, turb_edr(k),        &
                                dist_mu(k, params%id),                             &
                                dist_lambda(k, params%id))
+                       write(umMessage, '(A, ES14.6)')                                       &
+                               'brian9999_turb_enhanced_accretion_factor = ', turb_enhance_factor
+                       call umPrint(umMessage, src='accretion', level=PrStatus_Normal)
                    end if
                end if
           end if
